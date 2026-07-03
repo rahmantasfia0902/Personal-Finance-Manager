@@ -1,21 +1,6 @@
 /**
  * Provides static validation utilities for the Personal Finance Manager (PFM)
  * application.
- *
- * <p>
- * The Validation module is the single source of truth for deciding whether
- * user entries and data records are well-formed and correct. It validates
- * account credentials (usernames, passwords, secret questions and answers),
- * CSV file names and structure, dates, categories, amounts, and complete
- * transaction records, according to the PFM functional specification.
- * </p>
- *
- * <p>
- * All methods are static and stateless so that any other module (Accounts,
- * Storage, Data Audit, Insights, Reports, Integration) can call them without
- * creating an instance.
- * </p>
- *
  * @author Selina Zhu
  * @author Tasfia Rahman
  * @author David Guanga
