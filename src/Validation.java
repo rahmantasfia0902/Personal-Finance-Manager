@@ -7,6 +7,8 @@
  */
 
 import java.nio.file.Path;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 
 public class Validation
 {
@@ -129,8 +131,27 @@ public class Validation
 	 *@return Returns true if date is in the correct format MM/DD/YYYY and checks to see if the date is valid
 	 *@author David Guanga
 	 * */
-	private static boolean isValidDateFormat(String date){
-		return false;
+	private static boolean isValidDateFormat(String date)
+    {
+        String[] dateArr = date.split("//");
+        int month = 0, day = 0, year = 0;
+        try
+        {
+            month = Integer.parseInt(dateArr[0]);
+            day = Integer.parseInt(dateArr[1]);
+            year = Integer.parseInt(dateArr[2]);
+            LocalDate tempDate = LocalDate.of(year, month, day);
+
+            return (tempDate.getYear() > 0);
+        }
+        catch(DateTimeException dateException)
+        {
+            return false;
+        }
+        catch(NumberFormatException e)
+        {
+            return false;
+        }
 	}
 	
 	/**
@@ -150,9 +171,25 @@ public class Validation
 	 *Home, Utilities, Food, Appearance, Work, Education, Transportation, Entertainment, Professional Services, Other
 	 *@author David Guanga
 	 * */
-	private static boolean isValidCategory(String categ){
-		return false;
-	}
+	private static boolean isValidCategory(String categ)
+    {
+    //TODO:Try to make categories its own type so that categories that are either expenses or income can be easily distinguished and
+    //add to 
+        String[] validCategories = {
+        "Compensation", "Allowance", "Investments",
+        "Home", "Utilities", "Food",
+        "Appearance", "Work", "Education",
+        "Transportation", "Entertainment",
+        "Professional Services", "Other"
+        };
+
+        boolean check = false;
+        for(int i = 0; (i < validCategories.length) && !check; i++)
+        {
+            check = categ.equalsIgnoreCase(validCategories[i]);
+        }
+        return check;
+    }
 
 	/**
 	 * Checks to see if the amounts can be converted to a number
@@ -161,6 +198,7 @@ public class Validation
 	 *@author David Guanga
 	 * */
 	private static boolean isValidAmount(String am){
+        
 		return false;
 	}
 
