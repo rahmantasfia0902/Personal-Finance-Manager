@@ -1,4 +1,4 @@
-
+package accounts;
 
 public class Account {
 /**
@@ -42,7 +42,7 @@ public class Account {
 	}
 /**
  * Get username that belongs to the account.
- * @return Account username
+ * @return accounts.Account username
  * @author Sakif
  */
 	public String getUsername() {

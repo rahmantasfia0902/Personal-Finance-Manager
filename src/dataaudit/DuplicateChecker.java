@@ -1,6 +1,6 @@
+package dataaudit;
 /**
  * Detects duplicate financial transactions.
- *
  * @author Muhaymen Dhali
  */
 public class DuplicateChecker {

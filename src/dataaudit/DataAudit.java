@@ -1,3 +1,5 @@
+package dataaudit;
+
 /**
  * Performs data auditing on a user's annual budget.
  *
