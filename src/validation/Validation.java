@@ -1,3 +1,5 @@
+package validation;
+
 /**
  * Provides static validation utilities for the Personal Finance Manager (PFM)
  * application.
@@ -6,7 +8,6 @@
  * @author David Guanga
  */
 
-import java.nio.file.Path;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
