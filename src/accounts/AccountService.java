@@ -1,4 +1,6 @@
 package accounts;
+import validation.Validation;
+import storage.AccountFileManager;
 
 public class AccountService {
 	
@@ -16,6 +18,16 @@ public class AccountService {
 		// postconditions: an account object is created with a username, hased password
 		// and secret question/answer. The account is stored into the appropiate CSV file. The password in the CSV file 
 		// will be hashed
+		
+		if (!isValidUsername(username)) return false;
+		if (accountExist(username)) return false;
+		if (!isValidPassword(password)) return false;
+		if (!isValidSecretQuestion(secretQuestion)) return false;
+		if (!isValidSecretAnswer(secretAnswer)) return false;
+		password = hashPassword(password);
+		
+		//Assuming storage uses a try-catch block:
+		saveAccount(username, password);
 		return true;
 	}
 	
@@ -76,6 +88,10 @@ public class AccountService {
 	public static void forgotUsername() {
 		// requirements: The user must correctly answer their secret question.
 		// postcondition: The user is prompted to change their username.
+		
+		/* After looking at it, this is harder to implement than it seems. I'll
+		 need to add a Person object to an account, so another identifier like 
+		 name or ID can trigger the security question. I'll save that for next sprint */
 	}
 	
 	/**
@@ -136,6 +152,8 @@ public class AccountService {
 		// requirements: the new username must be valid. the new username must also be unique
 		//
 		// postconditions: the old username is replace with the new username. The username is updated in the CSV file.
+		
+		if (!isValidUsername)
 		return true;
 	}
 	
