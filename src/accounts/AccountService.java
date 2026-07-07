@@ -43,7 +43,18 @@ public class AccountService {
 	public static boolean logout() {
 		// postconditions: any account changes made will be written to the accounts CSV file.
 		// the user will return to the login page.
-		return true;
+		try {
+			System.out.println("Logging out user..........");
+			//What would be here is saving the current userdata to a CSV file using the Storage team;s methods through AccountFileManager.saveAccount()
+			// Need from Integration team a SessionManager.clearSession(), pretty much what they methods they use to clear a session
+			
+			System.out.println("Returning to login screen...");
+			return true;
+		}
+		catch(Exception e) {
+			System.err.println("Error during logout process: "+e.getMessage());
+			return false;
+		}
 	}
 	
 	/**
@@ -90,7 +101,28 @@ public class AccountService {
 		// requirements: the new password must be valid. the password must then be hashed
 		//
 		// postconditions: the old password is replace with the new password. The pasword is updated in the CSV file.
-		return true;
+		if (account == null) {
+			return false;
+		}
+		
+		//IMPORTANT THIS PART IS TEMPORARYY: Replace the follwoing with Validation.isValidPassword() whenever its available
+		if(newPassword == null || newPassword.length()<8) {
+			System.err.println("Error; password needs to be at least 8 characters long.");
+			return false;
+		}
+		
+		
+		//hashing the new password
+		String hashedPassword = hashPassword(newPassword);
+		if(hashedPassword == null) {
+			System.err.println("Error; failure  to hash password.");
+			return false;
+		}
+		
+		// Update the account with the hashed password
+		account.setHashedPassword(hashedPassword);
+		
+		// IMPORTANT Need AccountFileManager.saveAccount() whenever its ready
 	}
 	
 	/**
@@ -116,6 +148,10 @@ public class AccountService {
 	 */
 	private static String hashPassword(String password) {
 		// postcondition: the password is hashed.
-		return "bob";
+		// used java builtin hashCode and convert to hex
+		if (password == null || password.isEmpty()) {
+			return null;
+		}
+		return Integer.toHexString(password.hashCode());
 	}
 }
