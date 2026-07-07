@@ -1,6 +1,6 @@
 package accounts;
 import validation.Validation;
-import storage.AccountFileManager;
+import  storage.AccountFileManager;
 
 public class AccountService {
 	
@@ -19,17 +19,17 @@ public class AccountService {
 		// and secret question/answer. The account is stored into the appropiate CSV file. The password in the CSV file 
 		// will be hashed
 		
-		if (!isValidUsername(username)) return false;
-		if (accountExist(username)) return false;
-		if (!isValidPassword(password)) return false;
-		if (!isValidSecretQuestion(secretQuestion)) return false;
-		if (!isValidSecretAnswer(secretAnswer)) return false;
+		if (!Validation.isValidUsername(username)) return false;
+		if (AccountFileManager.accountExist(username)) return false; //AccountFileManager needs to be a static utitlity class
+		if (!Validation.isValidPassword(password)) return false;
+		if (!Validation.isValidSecretQuestion(secretQuestion)) return false;
+		if (!Validation.isValidSecretAnswer(secretAnswer)) return false;
 		password = hashPassword(password);
 		
 		//Assuming storage uses a try-catch block:
-		saveAccount(username, password);
+		AccountFileManager.saveAccount(username, password); //AccountFileManager needs to be a static utility class
 		return true;
-	}
+	
 	
 	/**
 	 * logs in a user into an account
@@ -153,7 +153,9 @@ public class AccountService {
 		//
 		// postconditions: the old username is replace with the new username. The username is updated in the CSV file.
 		
-		if (!isValidUsername)
+		if (!Validation.isValidUsername(newUsername) || AccountFileManager.accountExist(newUsername))
+			return false;
+		account.setUsername(newUsername);
 		return true;
 	}
 	
