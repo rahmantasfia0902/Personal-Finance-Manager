@@ -5,6 +5,48 @@ import  storage.AccountFileManager;
 public class AccountService {
 	
 	/**
+	 * Manages the current user session. Tracks
+	 * the logged-in user and authentication status.
+	 * @author Sakif
+	 */
+	public static class SessionManager{
+		//current logged in user or null if no one is logged in 
+		private static Account currentUser;
+		private static boolean isAuthenticated;
+		/*
+		 * gets current logged in user
+		 * @return current user or null if not logged in
+		 */
+		public static Account getCurrentUser() {
+			return currentUser;
+		}
+		/**
+		 * sets current logged in user and update authentication
+		 * @param user set as logged in
+		 */
+		public static void setCurrentUser(Account user) {
+			currentUser = user;
+			isAuthenticated = (user != null);
+		}
+		/**
+		 * checks if user is authenticated
+		 * @return true if authenticated, false if not
+		 */
+		public static boolean isAuthenticated() {
+			return isAuthenticated;
+		}
+		/**
+		 * clears the session and logs out user
+		 * resets currentuser and isAuthenticated
+		 */
+		public static void clearSession() {
+			currentUser = null;
+			isAuthenticated = false;
+			System.out.println("Session cleared.");
+		}
+	}
+	
+	/**
 	 * @param username the user's username
 	 * @param password the user's password
 	 * @param secretQuestion the user's own secret question
@@ -30,7 +72,7 @@ public class AccountService {
 		AccountFileManager.saveAccount(username, password); //AccountFileManager needs to be a static utility class
 		return true;
 	
-	
+	}
 	/**
 	 * logs in a user into an account
 	 * @param username the users username
@@ -57,9 +99,9 @@ public class AccountService {
 		// the user will return to the login page.
 		try {
 			System.out.println("Logging out user..........");
+			Account currentUser = SessionManager.getCurrentUser();
 			//What would be here is saving the current userdata to a CSV file using the Storage team;s methods through AccountFileManager.saveAccount()
-			// Need from Integration team a SessionManager.clearSession(), pretty much what they methods they use to clear a session
-			
+			SessionManager.clearSession();
 			System.out.println("Returning to login screen...");
 			return true;
 		}
