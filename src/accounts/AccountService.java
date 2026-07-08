@@ -1,7 +1,8 @@
-package accounts;
+   package accounts;
+   import storage.AccountFileManager;
+   import java.util.Scanner;
 
-public class AccountService {
-	
+   public class AccountService {	
 	/**
 	 * @param username the user's username
 	 * @param password the user's password
@@ -31,7 +32,15 @@ public class AccountService {
 		// Upon hashing the password witt the same hasing algorithm, it must match the hashed password read from file.
 		//
 		// postconditions: The user can go to the next page set by integration to access there audits n stuff
-		return true;
+		AccountFileManager fileManager = new AccountFileManager();
+		Account account = (Account) fileManager.loadAccount(username);
+
+		if (account == null) {
+		    return false;
+		}
+
+		String hashedInput = hashPassword(password);
+		return hashedInput.equals(account.getHashedPassword());
 	}
 	
 	/**
@@ -55,6 +64,30 @@ public class AccountService {
 		// requirements: The prompt requesting the user to answer their secret question
 		// must be called. Their answer must be correct.
 		// postcondition: The user is prompted to change their password.
+		Scanner scanner = new Scanner(System.in);
+		AccountFileManager fileManager = new AccountFileManager();
+
+		System.out.print("Enter your username: ");
+		String username = scanner.nextLine();
+
+		Account account = (Account) fileManager.loadAccount(username);
+		if (account == null) {
+		    System.out.println("No account found with that username.");
+		    return;
+		}
+
+		System.out.println(account.getSecretQuestion());
+		System.out.print("Enter your answer: ");
+		String answer = scanner.nextLine();
+
+		if (checkSecretAnswer(answer, account)) {
+		    System.out.print("Correct! Enter your new password: ");
+		    String newPassword = scanner.nextLine();
+		    changePassword(newPassword, account);
+		    System.out.println("Password updated successfully.");
+		} else {
+		    System.out.println("Incorrect answer. Password reset denied.");
+		}
 	}
 	
 	/**
@@ -76,7 +109,7 @@ public class AccountService {
 	 */
 	private static boolean checkSecretAnswer(String secretAnswer, Account account) {
 		// postcondition: if the secret answer matches the accounts, the user can change whatever they need to accordingly.
-		return true;
+		return account.getSecretAnswer().equals(secretAnswer); 
 	}
 	
 	/**
