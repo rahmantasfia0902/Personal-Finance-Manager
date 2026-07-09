@@ -103,20 +103,54 @@ final class MenuUtil {
      * @param prompt  the prompt message
      * @param options the available options
      * @return the chosen option
+     * @author Mohsen Kanj
      */
     public static String promptChoice(Scanner scanner, String prompt, List<String> options) {
-        return null;
-    }
+    while (true) {
+        System.out.println(prompt);
 
+        for (int i = 0; i < options.size(); i++) {
+            System.out.println((i + 1) + ". " + options.get(i));
+        }
+
+        System.out.print("Enter choice: ");
+        String input = scanner.nextLine().trim();
+
+        try {
+            int choice = Integer.parseInt(input);
+
+            if (choice >= 1 && choice <= options.size()) {
+                return options.get(choice - 1);
+            }
+        } catch (NumberFormatException e) {
+            // keep asking
+        }
+
+        System.err.println("Invalid choice. Please try again.");
+    }
+}
     /**
      * Prompts the user for a yes/no response.
      *
      * @param scanner the scanner to read input from
      * @param prompt  the prompt message
      * @return true for yes, false for no
+     * @author Mohsen Kanj
      */
-    public static boolean promptYesNo(Scanner scanner, String prompt) {
-        return false;
+   public static boolean promptYesNo(Scanner scanner, String prompt) {
+    while (true) {
+        System.out.print(prompt + " (y/n): ");
+        String input = scanner.nextLine().trim().toLowerCase();
+
+        if (input.equals("y") || input.equals("yes")) {
+            return true;
+        }
+
+        if (input.equals("n") || input.equals("no")) {
+            return false;
+        }
+
+        System.err.println("Please enter y or n.");
     }
 }
 
