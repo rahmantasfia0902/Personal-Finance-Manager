@@ -4,8 +4,17 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 
 /**
- * Provides static validation utilities for the Personal Finance Manager (PFM)
- * application.
+ * Provides static methods for validating user input and CSV file data
+ * used by the Personal Finance Manager (PFM) application.
+ *
+ * <p>
+ * This class validates account information such as usernames,
+ * passwords, secret questions, and secret answers. It also validates
+ * CSV file names, headers, records, dates, categories, amounts, and
+ * ensures that imported financial data conforms to the application's
+ * required format.
+ * </p>
+ *
  * @author Selina Zhu
  * @author Tasfia Rahman
  * @author David Guanga
