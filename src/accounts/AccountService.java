@@ -11,12 +11,16 @@ import java.util.Scanner;
 
    public class AccountService {
 	   
+	   private AccountService() {}
+	   
 	/**
 	 * Manages the current user session. Tracks
 	 * the logged-in user and authentication status.
 	 * @author Sakif
 	 */
-	public static class SessionManager{
+	 static class SessionManager{
+		 
+		private SessionManager() {}
 		//current logged in user or null if no one is logged in 
 		private static Account currentUser;
 		private static boolean isAuthenticated;
@@ -69,7 +73,7 @@ import java.util.Scanner;
 		// will be hashed
 		
 		if (!Validation.isValidUsername(username)) return false;
-		if (AccountFileManager.accountExist(username)) return false; //AccountFileManager needs to be a static utitlity class
+		if (AccountFileManager.accountExists(username)) return false; //AccountFileManager needs to be a static utitlity class
 		if (!Validation.isValidPassword(password)) return false;
 		if (!Validation.isValidSecretQuestion(secretQuestion)) return false;
 		if (!Validation.isValidSecretAnswer(secretAnswer)) return false;
@@ -119,7 +123,7 @@ import java.util.Scanner;
 		// the user will return to the login page.
 		try {
 			System.out.println("Logging out user..........");
-			Account currentUser = SessionManager.getCurrentUser();
+			//Account currentUser = SessionManager.getCurrentUser(); this isnt used, so Im commenting it for now.
 			//What would be here is saving the current userdata to a CSV file using the Storage team;s methods through AccountFileManager.saveAccount()
 			SessionManager.clearSession();
 			System.out.println("Returning to login screen...");
@@ -140,16 +144,22 @@ import java.util.Scanner;
 		// requirements: The prompt requesting the user to answer their secret question
 		// must be called. Their answer must be correct.
 		// postcondition: The user is prompted to change their password.
+		
 		Scanner scanner = new Scanner(System.in);
 		
 		System.out.print("Enter your username: ");
 		String username = scanner.nextLine();
+		
+		if (!AccountFileManager.accountExists(username)) {
+			System.err.print("Error: No such user exist with name " + username + ".");
+			return;
+		}
 
 		Account account = (Account) AccountFileManager.loadAccount(username);
 		if (account == null) {
 		    System.out.println("No account found with that username.");
 		    return;
-		}
+		
 
 		System.out.println(account.getSecretQuestion());
 		System.out.print("Enter your answer: ");
@@ -240,9 +250,8 @@ import java.util.Scanner;
 		// postconditions: the old username is replace with the new username. The username is updated in the CSV file.
 		
 		
-		//TODO ask for password before allowing a change in username
 		
-		if (!Validation.isValidUsername(newUsername) || AccountFileManager.accountExist(newUsername))
+		if (!Validation.isValidUsername(newUsername) || AccountFileManager.accountExists(newUsername))
 			return false;
 		account.setUsername(newUsername);
 		return true;
