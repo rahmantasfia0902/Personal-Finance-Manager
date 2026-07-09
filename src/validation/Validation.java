@@ -1,5 +1,8 @@
 package validation;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
+
 /**
  * Provides static validation utilities for the Personal Finance Manager (PFM)
  * application.
@@ -8,11 +11,11 @@ package validation;
  * @author David Guanga
  */
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-
 public class Validation
 {
+    private static String[] validCategories;
+
+
 	/**
      * Validates a user's username.
      *
@@ -187,16 +190,18 @@ public class Validation
     {
     //TODO:Try to make categories its own type so that categories that are either expenses or income can be easily distinguished and
     //add to 
-        String[] validCategories = {
+        /*String[] validCategories = {
         "Compensation", "Allowance", "Investments",
         "Home", "Utilities", "Food",
         "Appearance", "Work", "Education",
         "Transportation", "Entertainment",
         "Professional Services", "Other"
         };
+        */
 
+        final int len = validCategories.length;
         boolean check = false;
-        for(int i = 0; (i < validCategories.length) && !check; i++)
+        for(int i = 0; (i < len) && !check; i++)
         {
             check = categ.equalsIgnoreCase(validCategories[i]);
         }
@@ -236,13 +241,27 @@ public class Validation
         }
 	}
 
+    public static void setValidCategories(String[] categories)
+    {
+        Validation.validCategories = categories;
+    }
+
 	/**
 	 * Checks to see if an entry in the .csv file has a valid date, category, and amount
-	 *@param take in a BudgetRecord that must be validated
-	 *@return true if the records hava a valid date format, category, and amount
-	 *@author David Guanga
-	 * */
-	public static boolean isValidRecord(){
-		return false;
+	 *@param movieRecordStr takes in a read line from the .csv file.
+	 *@param recordIndex the line number of where you are at in the .csv file
+     *@return true if the records hava a valid date format, category, and amount
+     *@author David Guanga
+     * */
+	public static boolean isValidRecord(String movieRecordStr, int recordIndex)
+    {
+        String[] recordArr = movieRecordStr.split(",");
+        String date = recordArr[0];
+        String category = recordArr[1];
+        String amount = recordArr[2];
+
+        return Validation.isValidDateFormat(date, recordIndex) 
+        && Validation.isValidAmount(amount, recordIndex) 
+        && Validation.isValidCategory(category, recordIndex);
 	}
 }
