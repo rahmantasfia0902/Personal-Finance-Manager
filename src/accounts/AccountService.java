@@ -147,6 +147,7 @@ import java.util.Scanner;
 		
 		if (!AccountFileManager.accountExists(username)) {
 			System.err.print("Error: No such user exist with name " + username + ".");
+			return;
 		}
 
 		Account account = (Account) AccountFileManager.loadAccount(username);
@@ -154,7 +155,7 @@ import java.util.Scanner;
 		/*if (account == null) {
 		    System.out.println("No account found with that username.");
 		    return;*/
-		}
+		
 
 		System.out.println(account.getSecretQuestion());
 		System.out.print("Enter your answer: ");
