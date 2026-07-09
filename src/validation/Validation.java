@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
-
 /**
  * Provides static methods for validating user input and CSV file data
  * used by the Personal Finance Manager (PFM) application.
@@ -364,8 +363,7 @@ public class Validation
 	}
 	/**
 	 *Sets the column titles to check for in the header of the .csv file 
-	 *@param categories sets the array of valid column titles for the header 
-     *@return nothing 
+	 *@param categories sets the array of valid column titles for the header of the .csv file
      *@author David Guanga
      * */
 	
@@ -392,4 +390,5 @@ public class Validation
         && Validation.isValidAmount(amount, recordIndex) 
         && Validation.isValidCategory(category, recordIndex);
 	}
+
 }
