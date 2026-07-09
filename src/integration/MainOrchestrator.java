@@ -32,7 +32,6 @@ enum MenuOptions {
     EXIT
 }
 
-
 /**
  * Holds the mapping of module names to their AppModule implementations.
  */
@@ -106,29 +105,30 @@ final class MenuUtil {
      * @author Mohsen Kanj
      */
     public static String promptChoice(Scanner scanner, String prompt, List<String> options) {
-    while (true) {
-        System.out.println(prompt);
+        while (true) {
+            System.out.println(prompt);
 
-        for (int i = 0; i < options.size(); i++) {
-            System.out.println((i + 1) + ". " + options.get(i));
-        }
-
-        System.out.print("Enter choice: ");
-        String input = scanner.nextLine().trim();
-
-        try {
-            int choice = Integer.parseInt(input);
-
-            if (choice >= 1 && choice <= options.size()) {
-                return options.get(choice - 1);
+            for (int i = 0; i < options.size(); i++) {
+                System.out.println((i + 1) + ". " + options.get(i));
             }
-        } catch (NumberFormatException e) {
-            // keep asking
-        }
 
-        System.err.println("Invalid choice. Please try again.");
+            System.out.print("Enter choice: ");
+            String input = scanner.nextLine().trim();
+
+            try {
+                int choice = Integer.parseInt(input);
+
+                if (choice >= 1 && choice <= options.size()) {
+                    return options.get(choice - 1);
+                }
+            } catch (NumberFormatException e) {
+                // keep asking
+            }
+
+            System.err.println("Invalid choice. Please try again.");
+        }
     }
-}
+
     /**
      * Prompts the user for a yes/no response.
      *
@@ -137,20 +137,21 @@ final class MenuUtil {
      * @return true for yes, false for no
      * @author Mohsen Kanj
      */
-   public static boolean promptYesNo(Scanner scanner, String prompt) {
-    while (true) {
-        System.out.print(prompt + " (y/n): ");
-        String input = scanner.nextLine().trim().toLowerCase();
+    public static boolean promptYesNo(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt + " (y/n): ");
+            String input = scanner.nextLine().trim().toLowerCase();
 
-        if (input.equals("y") || input.equals("yes")) {
-            return true;
+            if (input.equals("y") || input.equals("yes")) {
+                return true;
+            }
+
+            if (input.equals("n") || input.equals("no")) {
+                return false;
+            }
+
+            System.err.println("Please enter y or n.");
         }
-
-        if (input.equals("n") || input.equals("no")) {
-            return false;
-        }
-
-        System.err.println("Please enter y or n.");
     }
 }
 
