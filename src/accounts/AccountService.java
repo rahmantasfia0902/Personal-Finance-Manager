@@ -93,7 +93,13 @@ import java.util.Scanner;
 		}
 
 		String hashedInput = hashPassword(password);
-		return hashedInput.equals(account.getHashedPassword());
+		if(hashedInput.equals(account.getHashedPassword())){
+			SessionManager.setCurrentUser(account);
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 	
 	/**
@@ -213,6 +219,7 @@ import java.util.Scanner;
 		account.setHashedPassword(hashedPassword);
 		
 		// IMPORTANT Need AccountFileManager.saveAccount() whenever its ready
+		return true;
 	}
 	
 	/**
