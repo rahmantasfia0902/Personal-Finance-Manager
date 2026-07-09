@@ -96,9 +96,10 @@ import java.util.Scanner;
 		// Upon hashing the password witt the same hasing algorithm, it must match the hashed password read from file.
 		//
 		// postconditions: The user can go to the next page set by integration to access there audits n stuff
-		
-		if (!AccountFileManager.accountExists(username))
-			return false;
+		if (!AccountFileManager.accountExists(username)) {
+		    return false;
+		}
+
 		Account account = (Account) AccountFileManager.loadAccount(username);
 
 		String hashedInput = hashPassword(password);
@@ -145,7 +146,7 @@ import java.util.Scanner;
 		// postcondition: The user is prompted to change their password.
 		
 		Scanner scanner = new Scanner(System.in);
-
+		
 		System.out.print("Enter your username: ");
 		String username = scanner.nextLine();
 		
@@ -155,10 +156,9 @@ import java.util.Scanner;
 		}
 
 		Account account = (Account) AccountFileManager.loadAccount(username);
-		
-		/*if (account == null) {
+		if (account == null) {
 		    System.out.println("No account found with that username.");
-		    return;*/
+		    return;
 		
 
 		System.out.println(account.getSecretQuestion());
