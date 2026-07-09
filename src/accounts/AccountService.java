@@ -3,7 +3,14 @@ import validation.Validation;
 import storage.AccountFileManager;
 import java.util.Scanner;
 
-   public class AccountService {	
+/**
+ * Class that provides basic operations for an Account.
+ * Allows for creating, loging in/out, and account recovery from forgotten passowrd
+ * @author Dwann, Harmony, Sakif
+ */
+
+   public class AccountService {
+	   
 	/**
 	 * Manages the current user session. Tracks
 	 * the logged-in user and authentication status.
@@ -13,7 +20,7 @@ import java.util.Scanner;
 		//current logged in user or null if no one is logged in 
 		private static Account currentUser;
 		private static boolean isAuthenticated;
-		/*
+		/**
 		 * gets current logged in user
 		 * @return current user or null if not logged in
 		 */
@@ -233,6 +240,9 @@ import java.util.Scanner;
 		// requirements: the new username must be valid. the new username must also be unique
 		//
 		// postconditions: the old username is replace with the new username. The username is updated in the CSV file.
+		
+		
+		//TODO ask for password before allowing a change in username
 		
 		if (!Validation.isValidUsername(newUsername) || AccountFileManager.accountExist(newUsername))
 			return false;
