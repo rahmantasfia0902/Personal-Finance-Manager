@@ -1,5 +1,8 @@
 package validation;
 
+import java.util.ArrayList;
+import java.io.File;
+import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -9,6 +12,7 @@ import java.nio.file.Paths;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
+import validation.FinanceDataEntry;
 /**
  * Provides static methods for validating user input and CSV file data
  * used by the Personal Finance Manager (PFM) application.
@@ -390,5 +394,50 @@ public class Validation
         && Validation.isValidAmount(amount, recordIndex) 
         && Validation.isValidCategory(category, recordIndex);
 	}
+    /**
+     *Gives back an array of all validated financial records from the given .csv file
+     *@param pathToCsv the fully qualified name of the .csv file
+     *@return An array list of all validated finance records after reading the .csv file
+     *@author David Guanga 
+     * */
 
+    public static ArrayList<FinanceDataEntry> readCsvFile(String pathToCsv)
+    {
+        if(!isValidCsvFile(pathToCsv))
+        {
+            System.out.println("Validation error: Invalid csv file was passed");
+        }
+
+        ArrayList<FinanceDataEntry> validRecords = new ArrayList<>();
+        String dataStr;
+        String[] dataEntries;
+        int recordIndex = 0;
+        try(BufferedReader csvReader = new BufferedReader(new FileReader(pathToCsv));)
+        {
+            while((dataStr = csvReader.readLine()) != null)
+            {
+                dataEntries = dataStr.split(",");
+                String tempDate = dataEntries[0];
+                String tempCategory = dataEntries[1];
+                String tempAmount = dataEntries[2];
+                boolean isValidRecord = isValidDateFormat(tempDate, recordIndex) && 
+                isValidCategory(tempCategory, recordIndex) && 
+                isValidAmount(tempAmount, recordIndex);
+                if(isValidRecord)
+                {
+                    int validAmount = (int)Double.parseDouble(tempAmount);
+                    FinanceDataEntry validFinanceRecord = new FinanceDataEntry(tempDate, tempCategory, validAmount);
+                    validRecords.add(validFinanceRecord);
+                }
+                recordIndex++;
+            }
+
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        return validRecords;
+    }
 }
