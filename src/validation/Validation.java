@@ -1,17 +1,3 @@
-package validation;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Provides static validation utilities for the Personal Finance Manager (PFM)
  * application.
@@ -19,22 +5,14 @@ import java.util.Set;
  * @author Tasfia Rahman
  * @author David Guanga
  */
-public class Validation {
 
-    private static final int MIN_USERNAME_LENGTH = 3;
-    private static final int MAX_USERNAME_LENGTH = 20;
-    private static final int MIN_PASSWORD_LENGTH = 8;
+import java.nio.file.Path;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 
-    private static final String REQUIRED_HEADER = "Date,Category,Amount";
-
-    private static final Set<String> VALID_CATEGORIES = Set.of(
-        "Compensation", "Allowance", "Investments",
-        "Home", "Utilities", "Food", "Appearance", "Work",
-        "Education", "Transportation", "Entertainment",
-        "Professional Services", "Other"
-    );
-
-    /**
+public class Validation
+{
+	/**
      * Validates a user's username.
      *
      * @param username the username entered by the user
@@ -43,14 +21,7 @@ public class Validation {
      * @author Selina Zhu
      */
     public static boolean isValidUsername(String username) {
-        if (username == null) {
-            return false;
-        }
-        String trimmed = username.trim();
-        if (trimmed.length() < MIN_USERNAME_LENGTH || trimmed.length() > MAX_USERNAME_LENGTH) {
-            return false;
-        }
-        return trimmed.matches("[A-Za-z][A-Za-z0-9_]*");
+        return false;
     }
 
     /**
@@ -62,49 +33,48 @@ public class Validation {
      * @author Selina Zhu
      */
     public static boolean isValidPassword(String password) {
-        if (password == null || password.length() < MIN_PASSWORD_LENGTH) {
-            return false;
-        }
-        boolean hasLetter = password.chars().anyMatch(Character::isLetter);
-        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
-        return hasLetter && hasDigit;
+        return false;
     }
 
     /**
      * Validates the user's secret question.
      *
      * @param secretQuestion the secret question entered by the user
-     * @return true if the secret question is valid; otherwise false
+     * @return true if the secret question is valid;
+     *         otherwise false
      * @author Selina Zhu
      */
     public static boolean isValidSecretQuestion(String secretQuestion) {
-        return secretQuestion != null && !secretQuestion.trim().isEmpty();
+        return false;
     }
 
     /**
      * Validates the user's secret answer.
      *
      * @param secretAnswer the secret answer entered by the user
-     * @return true if the secret answer is valid; otherwise false
+     * @return true if the secret answer is valid;
+     *         otherwise false
      * @author Selina Zhu
      */
     public static boolean isValidSecretAnswer(String secretAnswer) {
-        return secretAnswer != null && !secretAnswer.trim().isEmpty();
+        return false;
     }
 
-    /**
+	/**
      * Checks whether a file name follows the required YYYY.csv pattern.
+     *
+     * <p>
+     * The file may be given as a bare name in the local folder or as a fully
+     * qualified path name (FQPN); in either case the base name must be a
+     * four-digit year followed by the .csv extension, for example 2025.csv.
+     * </p>
      *
      * @param fileName the file name or fully qualified path to validate
      * @return true if the base file name matches YYYY.csv, false otherwise
      * @author Tasfia Rahman
      */
     public static boolean isValidFileName(String fileName) {
-        if (fileName == null) {
-            return false;
-        }
-        String baseName = Paths.get(fileName).getFileName().toString();
-        return baseName.matches("\\d{4}\\.csv");
+        return false; // TODO: implement
     }
 
     /**
@@ -117,160 +87,161 @@ public class Validation {
      * @author Tasfia Rahman
      */
     public static boolean isValidCsvFile(String fileName) {
-        if (!isValidFileName(fileName)) {
-            return false;
-        }
-        Path path = Paths.get(fileName);
-        if (!Files.isReadable(path)) {
-            return false;
-        }
-        try (BufferedReader reader = Files.newBufferedReader(path)) {
-            String firstLine = reader.readLine();
-            return firstLine != null && isValidHeader(firstLine);
-        } catch (IOException e) {
-            return false;
-        }
+        return false; // TODO: implement
     }
 
     /**
      * Checks whether a header line matches the required CSV header.
+     *
+     * <p>
+     * The required header is {@code Date,Category,Amount}. The comparison is
+     * case-insensitive and ignores surrounding whitespace and a leading
+     * byte-order mark (BOM) if present.
+     * </p>
      *
      * @param headerLine the first line of a CSV file
      * @return true if the header is valid, false otherwise
      * @author Tasfia Rahman
      */
     public static boolean isValidHeader(String headerLine) {
-        if (headerLine == null) {
-            return false;
-        }
-        String cleaned = headerLine.replace("﻿", "").trim();
-        return cleaned.equalsIgnoreCase(REQUIRED_HEADER);
+        return false; // TODO: implement
     }
 
     /**
      * Checks whether a CSV data file already exists for the given year in the
      * given directory.
      *
+     * <p>
+     * Used to warn the user before overwriting a previously loaded year.
+     * </p>
+     *
      * @param directory the directory to search
-     * @param year the four-digit year to look for
-     * @return true if a file named YYYY.csv exists in the directory, false otherwise
+     * @param year      the four-digit year to look for
+     * @return true if a file named YYYY.csv exists in the directory,
+     *         false otherwise
      * @author Tasfia Rahman
      */
     public static boolean fileExistsForYear(String directory, int year) {
-        if (directory == null) {
-            return false;
-        }
-        Path candidate = Paths.get(directory, year + ".csv");
-        return Files.exists(candidate);
+        return false; // TODO: implement
     }
 
-    /**
-     * Checks to see if the date is in the proper format and represents a
-     * valid month, date, and year.
-     *
-     * @param date the date as a String
-     * @return true if date is in the correct format MM/DD/YYYY and represents
-     *         a real calendar date
-     * @author David Guanga
-     */
-    public static boolean isValidDateFormat(String date) {
-        if (date == null || !date.matches("\\d{2}/\\d{2}/\\d{4}")) {
+	/**
+	 * Checks to see if the date is in the proper format and represents a valid month, date, and year
+	 *@param date takes in the date as a String object
+     *@param recordIndex the line number of the data record being currently read from the .csv file 
+	 *@return Returns true if date is in the correct format MM/DD/YYYY and checks to see if the date is valid
+ 
+	 *@author David Guanga
+	 * */
+	private static boolean isValidDateFormat(String date, int recordIndex)
+    {
+        String[] dateArr = date.split("/");
+        int month = 0, day = 0, year = 0;
+        try
+        {
+            month = Integer.parseInt(dateArr[0]);
+            day = Integer.parseInt(dateArr[1]);
+            year = Integer.parseInt(dateArr[2]);
+            LocalDate tempDate = LocalDate.of(year, month, day);
+
+            return (tempDate.getYear() > 0);
+        }
+        catch(DateTimeException dateException)
+        {
             return false;
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
-                .withResolverStyle(ResolverStyle.STRICT);
-        try {
-            LocalDate.parse(date, formatter);
+        catch(NumberFormatException e)
+        {
+            System.out.println("Invalid date format at the " + recordIndex + " data entry in the file" );
+            return false;
+        }
+	}
+	
+	/**
+	 * Checks to see if the year of each entry of the .csv file is the same
+	 *@param year the year of the given .csv file 
+     *@param yearToCheck the year given by a data entry to check to see if both are equal
+     *@param recordIndex the line number of the data record being currently read from the .csv file 
+	 *@return Returns true if the passed date is of the same year as all the other dates 
+	 *@author David Guanga
+	 * */
+	public static boolean isSameYear(final String year, String yearToCheck, int recordIndex) 
+    {
+        boolean isSameYear = year.equals(yearToCheck);
+        if(!isSameYear)
+            System.out.println("Invalid year at the " + recordIndex + " data entry. The year must match the year of the file name.");
+
+        return isSameYear;
+	}
+
+	/**
+	 * Checks to see if the category matches one of the accepted categories 
+	 *@param categ the name of the category to validate
+     *@param recordIndex the line number of the data record being currently read from the .csv file 
+	 *@return Returns true if the input category is one of the following: Compensation, Allowance, Investments,
+	 *Home, Utilities, Food, Appearance, Work, Education, Transportation, Entertainment, Professional Services, Other
+	 *@author David Guanga
+	 * */
+	private static boolean isValidCategory(String categ, int recordIndex)
+    {
+    //TODO:Try to make categories its own type so that categories that are either expenses or income can be easily distinguished and
+    //add to 
+        String[] validCategories = {
+        "Compensation", "Allowance", "Investments",
+        "Home", "Utilities", "Food",
+        "Appearance", "Work", "Education",
+        "Transportation", "Entertainment",
+        "Professional Services", "Other"
+        };
+
+        boolean check = false;
+        for(int i = 0; (i < validCategories.length) && !check; i++)
+        {
+            check = categ.equalsIgnoreCase(validCategories[i]);
+        }
+
+        if(!check)
+        {
+            System.out.println("Invalid category at the " + recordIndex + " data entry in the file");
+        }
+
+        return check;
+    }
+
+	/**
+	 * Checks to see if the amounts can be converted to a number
+	 *@param amount the amount to process and validate
+     *@param recordIndex the line number of the data record being currently read from the .csv file 
+	 *@return Returns true if the String am can be converted into a number 
+	 *@author David Guanga
+	 * */
+	private static boolean isValidAmount(String amount, int recordIndex)
+    {
+        try
+        {
+            double tempAmount = Double.parseDouble(amount);
+            int dollarAmount = (int)tempAmount;
+            double cents = tempAmount - dollarAmount;
+
+            if(cents > 0.001)
+                System.out.println("Truncating amount in " + recordIndex + " data entry to the nearest dollar");
             return true;
-        } catch (DateTimeParseException e) {
+        }
+        catch(Exception e)
+        {
+            System.out.println("Invalid amount at the " + recordIndex + " data entry in the file.\n"
+            + "Only dollar amount is accepted");
             return false;
         }
-    }
+	}
 
-    /**
-     * Checks that every date in a CSV file belongs to the same, expected year.
-     *
-     * @param dates the raw date strings read from the file (MM/DD/YYYY each)
-     * @param expectedYear the year all dates must belong to, typically parsed
-     *                     from the YYYY.csv file name
-     * @return true if every date is valid and falls within expectedYear
-     * @author David Guanga
-     */
-    public static boolean isSameYear(List<String> dates, int expectedYear) {
-        if (dates == null || dates.isEmpty()) {
-            return false;
-        }
-        for (String date : dates) {
-            if (!isValidDateFormat(date)) {
-                return false;
-            }
-            int year = Integer.parseInt(date.substring(6));
-            if (year != expectedYear) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks to see if the category matches one of the accepted categories.
-     *
-     * @param categ the name of the category to validate
-     * @return true if the input category is one of the accepted income or
-     *         expense categories
-     * @author David Guanga
-     */
-    public static boolean isValidCategory(String categ) {
-        return categ != null && VALID_CATEGORIES.contains(categ.trim());
-    }
-
-    /**
-     * Checks to see if the amount can be converted to a whole-dollar number.
-     *
-     * @param am the amount to process and validate
-     * @return true if am is a valid whole-dollar integer amount
-     * @author David Guanga
-     */
-    public static boolean isValidAmount(String am) {
-        if (am == null || !am.trim().matches("-?\\d+")) {
-            return false;
-        }
-        try {
-            Integer.parseInt(am.trim());
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Checks to see if a single CSV row has a valid date, category, and amount.
-     *
-     * @param fields the raw row fields in order: {date, category, amount}
-     * @return true if the row has a valid date format, category, and amount
-     * @author David Guanga
-     */
-    public static boolean isValidRecord(String[] fields) {
-        if (fields == null || fields.length != 3) {
-            return false;
-        }
-        return isValidDateFormat(fields[0].trim())
-                && isValidCategory(fields[1].trim())
-                && isValidAmount(fields[2].trim());
-    }
-
-    /**
-     * Checks to see if a raw CSV line has a valid date, category, and amount.
-     * Splits the line on commas and delegates to {@link #isValidRecord(String[])}.
-     *
-     * @param line a single raw line from a CSV file, e.g. "07/06/2026,Food,-50"
-     * @return true if the line splits into exactly 3 fields and each field is valid
-     * @author David Guanga
-     */
-    public static boolean isValidRecord(String line) {
-        if (line == null) {
-            return false;
-        }
-        return isValidRecord(line.split(",", -1));
-    }
+	/**
+	 * Checks to see if an entry in the .csv file has a valid date, category, and amount
+	 *@param take in a BudgetRecord that must be validated
+	 *@return true if the records hava a valid date format, category, and amount
+	 *@author David Guanga
+	 * */
+	public static boolean isValidRecord(){
+		return false;
+	}
 }
