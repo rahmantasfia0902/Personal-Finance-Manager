@@ -1,5 +1,10 @@
 package accounts;
 
+/**
+ * class that packages all the data for a user Account
+ * holds the username, hashed password, secret question and answer
+ * @author Sakif
+ */
 public class Account {
 /**
  * username for this account
