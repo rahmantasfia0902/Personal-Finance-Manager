@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -19,8 +18,8 @@ import java.util.List;
  */
 public final class AccountFileManager {
 
-    private static final Path DATA_DIRECTORY = Paths.get("data");
-    private static final Path ACCOUNT_FILE = DATA_DIRECTORY.resolve("accounts.csv");
+    private static final FileUtil FILE_UTIL = new FileUtil();
+    private static final Path ACCOUNT_FILE = FILE_UTIL.resolvePath("accounts.csv");
     private static final String HEADER = "Username,HashedPassword,SecretQuestion,SecretAnswer";
     private static final int EXPECTED_FIELD_COUNT = 4;
 
@@ -230,7 +229,11 @@ public final class AccountFileManager {
      * @author Mohammed, Ayub, Fuad
      */
     private static void ensureAccountFileExists() throws IOException {
-        Files.createDirectories(DATA_DIRECTORY);
+        try {
+            FILE_UTIL.ensureDataDirectoryExists();
+        } catch (IllegalStateException e) {
+            throw new IOException("Unable to create data directory.", e);
+        }
 
         if (!Files.exists(ACCOUNT_FILE)) {
             List<String> lines = new ArrayList<>();
