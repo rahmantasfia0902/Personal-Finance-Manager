@@ -3,9 +3,9 @@ package storage;
 import accounts.Account;
 import accounts.AccountService;
 import integration.AppModule;
+import integration.MenuUtil;
 
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Entry point for the Storage module. Implements {@link AppModule} so the
@@ -34,7 +34,6 @@ public class StorageModule implements AppModule {
     private CsvImporter csvImporter;
     private CsvExporter csvExporter;
     private FileUtil fileUtil;
-    private Scanner scanner;
 
     /**
      * Constructs a new {@code StorageModule}. No heavy setup here —
@@ -58,7 +57,9 @@ public class StorageModule implements AppModule {
 
     /**
      * Performs one-time setup: instantiates the helper classes this module
-     * depends on and makes sure the data directory exists.
+     * depends on and makes sure the data directory exists. Console input is
+     * read through {@link MenuUtil}'s shared scanner rather than a
+     * module-local one, so there is no {@code Scanner} to set up here.
      *
      * @author Mohammed, Ayub, Fuad
      */
@@ -68,7 +69,6 @@ public class StorageModule implements AppModule {
         csvImporter = new CsvImporter();
         csvExporter = new CsvExporter();
         fileUtil = new FileUtil();
-        scanner = new Scanner(System.in);
 
         fileUtil.ensureDataDirectoryExists();
     }
@@ -91,8 +91,13 @@ public class StorageModule implements AppModule {
 
         boolean running = true;
         while (running) {
-            printMenu();
-            String choice = scanner.nextLine().trim();
+            String choice = MenuUtil.promptChoice("Storage Module",
+                    "1. List budget years",
+                    "2. View a budget",
+                    "3. Import transactions from CSV",
+                    "4. Export transactions to CSV",
+                    "5. Delete a budget year",
+                    "0. Back to main menu");
 
             switch (choice) {
                 case "1" -> handleListBudgetYears(username);
@@ -107,23 +112,6 @@ public class StorageModule implements AppModule {
     }
 
     // ---- submenu actions ------------------------------------------------
-
-    /**
-     * Prints the storage submenu options to the console.
-     *
-     * @author Mohammed, Ayub, Fuad
-     */
-    private void printMenu() {
-        System.out.println();
-        System.out.println("=== Storage Module ===");
-        System.out.println("1. List budget years");
-        System.out.println("2. View a budget");
-        System.out.println("3. Import transactions from CSV");
-        System.out.println("4. Export transactions to CSV");
-        System.out.println("5. Delete a budget year");
-        System.out.println("0. Back to main menu");
-        System.out.print("Choose an option: ");
-    }
 
     /**
      * Looks up and prints all budget years on file for the given user.
@@ -172,8 +160,7 @@ public class StorageModule implements AppModule {
      * @author Mohammed, Ayub, Fuad
      */
     private void handleImportCsv(String username) {
-        System.out.print("Path to CSV file: ");
-        String filePath = scanner.nextLine().trim();
+        String filePath = MenuUtil.promptString("Path to CSV file");
 
         // NOTE: once Validation.isValidFileName()/isValidCsvFile() are
         // implemented, gate the import behind those checks, e.g.:
@@ -228,8 +215,7 @@ public class StorageModule implements AppModule {
         }
 
         Budget budget = budgetStorage.readBudget(username, year);
-        System.out.print("Destination file path: ");
-        String filePath = scanner.nextLine().trim();
+        String filePath = MenuUtil.promptString("Destination file path");
 
         csvExporter.writeReportToCsv(budget.getTransactions(), filePath);
         System.out.println("Exported to " + filePath + ".");
@@ -250,9 +236,9 @@ public class StorageModule implements AppModule {
             return;
         }
 
-        System.out.print("Delete budget for " + year + "? This cannot be undone (y/n): ");
-        String confirm = scanner.nextLine().trim().toLowerCase();
-        if (confirm.equals("y") || confirm.equals("yes")) {
+        boolean confirmed = MenuUtil.promptYesNo(
+                "Delete budget for " + year + "? This cannot be undone");
+        if (confirmed) {
             budgetStorage.deleteBudget(username, year);
             System.out.println("Deleted budget for " + year + ".");
         } else {
@@ -267,7 +253,7 @@ public class StorageModule implements AppModule {
      * @author Mohammed, Ayub, Fuad
      */
     private int promptForYear() {
-        System.out.print("Enter year: ");
-        return Integer.parseInt(scanner.nextLine().trim());
+        String input = MenuUtil.promptString("Enter year");
+        return Integer.parseInt(input);
     }
 }
