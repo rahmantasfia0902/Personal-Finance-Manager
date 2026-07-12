@@ -3,8 +3,10 @@ package insights;
 import integration.AppModule;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Entry point for the Insights module.
@@ -20,20 +22,17 @@ import java.util.Scanner;
  */
 public class InsightsModule implements AppModule {
 
-    /**
-     * Registered module name used by the Integration registry.
-     */
+    /** Registered module name used by the Integration registry. */
     private static final String MODULE_NAME = "insights";
 
-    /**
-     * Handles insight calculations and report generation.
-     */
+    /** Handles insight calculations and report generation. */
     private InsightsManager insightsManager;
 
-    /**
-     * Reads user input from the console.
-     */
+    /** Reads user input from the console. */
     private Scanner scanner;
+
+    /** Categories that the user wants to exclude from insights. */
+    private Set<String> excludedCategories;
 
     /**
      * Constructs a new InsightsModule.
@@ -68,6 +67,7 @@ public class InsightsModule implements AppModule {
     public void initialize() {
         insightsManager = new InsightsManager();
         scanner = new Scanner(System.in);
+        excludedCategories = new LinkedHashSet<>();
     }
 
     /**
@@ -80,6 +80,8 @@ public class InsightsModule implements AppModule {
      */
     @Override
     public void handleSelection() {
+        ensureInitialized();
+
         boolean running = true;
 
         while (running) {
@@ -88,9 +90,13 @@ public class InsightsModule implements AppModule {
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
-                case "1" -> handleDisplaySampleInsights();
+                case "1" -> handleGenerateInsights();
+                case "2" -> handleAddExcludedCategories();
+                case "3" -> handleViewExcludedCategories();
+                case "4" -> handleClearExcludedCategories();
                 case "0" -> running = false;
-                default -> System.out.println("Invalid option, please try again.");
+                default -> System.out.println(
+                        "Invalid option, please try again.");
             }
         }
     }
@@ -103,21 +109,119 @@ public class InsightsModule implements AppModule {
     private void printMenu() {
         System.out.println();
         System.out.println("=== Insights Module ===");
-        System.out.println("1. Display sample yearly insights");
+        System.out.println("1. Generate yearly insights");
+        System.out.println("2. Add categories to exclude");
+        System.out.println("3. View excluded categories");
+        System.out.println("4. Clear excluded categories");
         System.out.println("0. Back to main menu");
         System.out.print("Choose an option: ");
     }
 
     /**
-     * Displays sample yearly insights for the alpha build.
+     * Generates insights using the current exclusion list.
      *
-     * <p>This allows Integration to verify that the Insights module
-     * can be called successfully before the final Storage connection
-     * is completed.</p>
+     * <p>For the Alpha build, this uses demo transactions. When Storage
+     * provides real yearly transactions, this method can pass those real
+     * transactions into {@link InsightsManager} instead.</p>
      *
      * @author Waliur Sun
      */
-    private void handleDisplaySampleInsights() {
+    private void handleGenerateInsights() {
+        List<String[]> transactions = createAlphaDemoTransactions();
+
+        if (!excludedCategories.isEmpty()) {
+            System.out.println();
+            System.out.println("Excluded categories applied: "
+                    + excludedCategories);
+        }
+
+        try {
+            insightsManager.displayInsights(
+                    transactions,
+                    new ArrayList<>(excludedCategories));
+        }
+        catch (IllegalArgumentException exception) {
+            System.out.println("Could not generate insights: "
+                    + exception.getMessage());
+        }
+    }
+
+    /**
+     * Lets the user enter categories to exclude.
+     *
+     * <p>Users may enter one category or several categories separated
+     * by commas.</p>
+     *
+     * @author Waliur Sun
+     */
+    private void handleAddExcludedCategories() {
+        System.out.println();
+        System.out.println("Enter categories to exclude.");
+        System.out.println("Use commas for multiple categories.");
+        System.out.println("Example: Education, Entertainment, Food");
+        System.out.print("Categories: ");
+
+        String input = scanner.nextLine().trim();
+
+        if (input.isEmpty()) {
+            System.out.println("No categories entered.");
+            return;
+        }
+
+        String[] categories = input.split(",");
+
+        for (String category : categories) {
+            String cleanedCategory = category.trim();
+
+            if (!cleanedCategory.isEmpty()) {
+                excludedCategories.add(cleanedCategory);
+                System.out.println(
+                        "Category added to excluded list: "
+                                + cleanedCategory);
+            }
+        }
+    }
+
+    /**
+     * Displays all currently excluded categories.
+     *
+     * @author Waliur Sun
+     */
+    private void handleViewExcludedCategories() {
+        System.out.println();
+
+        if (excludedCategories.isEmpty()) {
+            System.out.println("No categories are currently excluded.");
+            return;
+        }
+
+        System.out.println("Excluded categories:");
+
+        for (String category : excludedCategories) {
+            System.out.println("- " + category);
+        }
+    }
+
+    /**
+     * Clears the excluded category list.
+     *
+     * @author Waliur Sun
+     */
+    private void handleClearExcludedCategories() {
+        excludedCategories.clear();
+        System.out.println("Excluded category list cleared.");
+    }
+
+    /**
+     * Creates temporary transactions for Alpha build testing.
+     *
+     * <p>This should be replaced with real Storage module data once
+     * the final integration contract is ready.</p>
+     *
+     * @return demo transaction list
+     * @author Waliur Sun
+     */
+    private List<String[]> createAlphaDemoTransactions() {
         List<String[]> transactions = new ArrayList<>();
 
         transactions.add(new String[]{"01/15/2025", "Compensation", "3000"});
@@ -127,7 +231,22 @@ public class InsightsModule implements AppModule {
         transactions.add(new String[]{"03/10/2025", "Transportation", "-150"});
         transactions.add(new String[]{"04/05/2025", "Entertainment", "-100"});
         transactions.add(new String[]{"05/01/2025", "Utilities", "-200"});
+        transactions.add(new String[]{"06/01/2025", "Education", "-900"});
 
-        insightsManager.displayInsights(transactions);
+        return transactions;
+    }
+
+    /**
+     * Makes sure initialize was called before the module runs.
+     *
+     * @author Waliur Sun
+     */
+    private void ensureInitialized() {
+        if (insightsManager == null
+                || scanner == null
+                || excludedCategories == null) {
+
+            initialize();
+        }
     }
 }
