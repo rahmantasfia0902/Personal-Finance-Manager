@@ -1,11 +1,11 @@
 package insights;
 
 import integration.AppModule;
+import integration.MenuUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -27,9 +27,6 @@ public class InsightsModule implements AppModule {
 
     /** Handles insight calculations and report generation. */
     private InsightsManager insightsManager;
-
-    /** Reads user input from the console. */
-    private Scanner scanner;
 
     /** Categories that the user wants to exclude from insights. */
     private Set<String> excludedCategories;
@@ -66,7 +63,6 @@ public class InsightsModule implements AppModule {
     @Override
     public void initialize() {
         insightsManager = new InsightsManager();
-        scanner = new Scanner(System.in);
         excludedCategories = new LinkedHashSet<>();
     }
 
@@ -85,9 +81,14 @@ public class InsightsModule implements AppModule {
         boolean running = true;
 
         while (running) {
-            printMenu();
-
-            String choice = scanner.nextLine().trim();
+            String choice = MenuUtil.promptChoice(
+                    "Insights Module",
+                    "1. Generate yearly insights",
+                    "2. Add categories to exclude",
+                    "3. View excluded categories",
+                    "4. Clear excluded categories",
+                    "0. Back to main menu"
+            );
 
             switch (choice) {
                 case "1" -> handleGenerateInsights();
@@ -99,22 +100,6 @@ public class InsightsModule implements AppModule {
                         "Invalid option, please try again.");
             }
         }
-    }
-
-    /**
-     * Prints the Insights submenu.
-     *
-     * @author Waliur Sun
-     */
-    private void printMenu() {
-        System.out.println();
-        System.out.println("=== Insights Module ===");
-        System.out.println("1. Generate yearly insights");
-        System.out.println("2. Add categories to exclude");
-        System.out.println("3. View excluded categories");
-        System.out.println("4. Clear excluded categories");
-        System.out.println("0. Back to main menu");
-        System.out.print("Choose an option: ");
     }
 
     /**
@@ -159,9 +144,8 @@ public class InsightsModule implements AppModule {
         System.out.println("Enter categories to exclude.");
         System.out.println("Use commas for multiple categories.");
         System.out.println("Example: Education, Entertainment, Food");
-        System.out.print("Categories: ");
 
-        String input = scanner.nextLine().trim();
+        String input = MenuUtil.promptString("Categories");
 
         if (input.isEmpty()) {
             System.out.println("No categories entered.");
@@ -242,10 +226,7 @@ public class InsightsModule implements AppModule {
      * @author Waliur Sun
      */
     private void ensureInitialized() {
-        if (insightsManager == null
-                || scanner == null
-                || excludedCategories == null) {
-
+        if (insightsManager == null || excludedCategories == null) {
             initialize();
         }
     }
