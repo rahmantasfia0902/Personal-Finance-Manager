@@ -65,24 +65,24 @@ public class MainOrchestrator {
         shutdownApplication();
     }
 
-    /**
-     * Runs the pre-authentication menu, handling login and registration
-     * until the user either logs in successfully or chooses to exit.
+      /**
+     * Runs the pre-authentication menu, handling login, registration, &
+     * password recovery options before the user logs into the system.
      *
      * @return false if the user chose to exit the application, true otherwise
-     * @author Luccas Amorim
+     * @author Yazmyrat Aydogdiyev
      */
-    private boolean runPreAuthMenu() {
-        // TODO: add a forgot password option;
-
+  private boolean runPreAuthMenu() {
         String choice = MenuUtil.promptChoice("Personal Finance Manager",
                 "1. Login",
                 "2. Register",
+                "3. Forgot Password",
                 "0. Exit");
 
         switch (choice) {
             case "1" -> handleLogin();
             case "2" -> handleRegister();
+            case "3" -> System.out.println("Password recovery feature coming soon.");
             case "0" -> {
                 return false;
             }
@@ -90,6 +90,7 @@ public class MainOrchestrator {
         }
         return true;
     }
+
 
     /**
      * Prompts for credentials and attempts to log in via the Accounts module.
