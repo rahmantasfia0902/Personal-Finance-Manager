@@ -199,6 +199,7 @@ public class MainOrchestrator {
      *
      * @param option the selected menu option
      * @author Luccas Amorim
+     * @author Mohsen Kanj
      */
      void dispatchSelection(MenuOptions option) {
         // TODO: module.handleSelection() runs code owned by other teams.
@@ -206,6 +207,7 @@ public class MainOrchestrator {
         // currently propagate all the way up and crash the app. we need to wrap this
         // in a try-catch (log it, print a friendly message, and return to the
         // main menu) so one module's bug can't take down the whole program.
+        
 
         if (option == MenuOptions.EXIT) {
             return;
@@ -219,7 +221,11 @@ public class MainOrchestrator {
             return;
         }
 
-        module.handleSelection();
+        try {
+          module.handleSelection();
+      }   catch (RuntimeException e) {
+         System.err.println("Something went wrong while running this module.");
+       }
     }
 
     /**
