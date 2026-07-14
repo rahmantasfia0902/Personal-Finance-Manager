@@ -70,6 +70,7 @@ public class MainOrchestrator {
      * password recovery options before the user logs into the system.
      *
      * @return false if the user chose to exit the application, true otherwise
+     * @author Luccas Amorim
      * @author Yazmyrat Aydogdiyev
      */
   private boolean runPreAuthMenu() {
