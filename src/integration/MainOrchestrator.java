@@ -225,8 +225,9 @@ public class MainOrchestrator {
         try {
           module.handleSelection();
       }   catch (RuntimeException e) {
-         System.err.println("Something went wrong while running this module.");
-       }
+    System.err.println("Error in module '" + moduleName + "': " + e.getMessage());
+    System.err.println("Returning to main menu.");
+}
     }
 
     /**
