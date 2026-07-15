@@ -45,7 +45,7 @@ public class BudgetStorage {
     /**
      * Constructs a new {@code BudgetStorage} instance.
      *
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     public BudgetStorage() {
         ensureBaseDirectoryExists();
@@ -56,7 +56,7 @@ public class BudgetStorage {
      *
      * @param username the username who owns the budget
      * @param budget   the budget to create
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     public void createBudget(String username, Budget budget) {
         writeBudget(username, budget);
@@ -68,7 +68,7 @@ public class BudgetStorage {
      * @param username the username who owns the budget
      * @param year     the year of the budget to read
      * @return the requested budget, or {@code null} if it could not be read
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     public Budget readBudget(String username, int year) {
         Path budgetPath = getBudgetPath(username, year);
@@ -109,7 +109,7 @@ public class BudgetStorage {
      *
      * @param username the username who owns the budget
      * @param budget   the budget containing updated data
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     public void updateBudget(String username, Budget budget) {
         writeBudget(username, budget);
@@ -120,7 +120,7 @@ public class BudgetStorage {
      *
      * @param username the username who owns the budget
      * @param year     the year of the budget to delete
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     public void deleteBudget(String username, int year) {
         Path budgetPath = getBudgetPath(username, year);
@@ -138,7 +138,7 @@ public class BudgetStorage {
      * @param username the username who owns the budget
      * @param year     the year to check
      * @return {@code true} if a budget exists for the given year, {@code false} otherwise
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     public boolean yearExists(String username, int year) {
         return Files.exists(getBudgetPath(username, year));
@@ -149,7 +149,7 @@ public class BudgetStorage {
      *
      * @param username the username to look up
      * @return a list of years that have an associated budget
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     public List<Integer> listYearsForUser(String username) {
         List<Integer> years = new ArrayList<>();
@@ -186,7 +186,7 @@ public class BudgetStorage {
      *
      * @param username the username who owns the budget
      * @param budget   the budget to write
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     private void writeBudget(String username, Budget budget) {
         if (username == null || username.isBlank() || budget == null) {
@@ -219,7 +219,7 @@ public class BudgetStorage {
      *
      * @param transaction the transaction to format
      * @return a CSV row
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     private String formatTransaction(Transaction transaction) {
         return transaction.date().format(DATE_FORMATTER)
@@ -234,7 +234,7 @@ public class BudgetStorage {
      *
      * @param line the CSV row to parse
      * @return a transaction, or {@code null} if the row is invalid
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     private Transaction parseTransaction(String line) {
         String[] parts = line.split(",", -1);
@@ -261,7 +261,7 @@ public class BudgetStorage {
      * @param username the username who owns the budget
      * @param year     the budget year
      * @return the budget file path
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     private Path getBudgetPath(String username, int year) {
         return getUserDirectory(username).resolve(year + ".csv");
@@ -272,7 +272,7 @@ public class BudgetStorage {
      *
      * @param username the username
      * @return the user budget directory path
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     private Path getUserDirectory(String username) {
         return BASE_DIRECTORY.resolve(cleanUsername(username));
@@ -281,7 +281,7 @@ public class BudgetStorage {
     /**
      * Creates the base budget directory if it does not already exist.
      *
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     private void ensureBaseDirectoryExists() {
         try {
@@ -297,7 +297,7 @@ public class BudgetStorage {
      *
      * @param username the username to clean
      * @return a safe username for file paths
-     * @author Mohammed, Ayub, Fuad
+     * @author Fuad
      */
     private String cleanUsername(String username) {
         if (username == null || username.isBlank()) {
