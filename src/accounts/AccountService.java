@@ -80,7 +80,7 @@ import java.util.Scanner;
 		password = hashPassword(password);
 		
 		//Assuming storage uses a try-catch block:
-		AccountFileManager.saveAccount(username, password); //AccountFileManager needs to be a static utility class
+		AccountFileManager.saveAccount(username, password, secretQuestion, secretAnswer); //AccountFileManager needs to be a static utility class
 		return true;
 	
 	}
@@ -129,7 +129,7 @@ import java.util.Scanner;
 			return true;
 		}
 		catch(Exception e) {
-			System.err.println("Error during logout process: "+e.getMessage());
+			System.err.println("Error during logout process: " + e.getMessage());
 			return false;
 		}
 	}
@@ -139,6 +139,7 @@ import java.util.Scanner;
 	 * their password if they answered correctly
 	 * @author Harmony
 	 */
+	
 	public static void forgotPassword() {
 		// requirements: The prompt requesting the user to answer their secret question
 		// must be called. Their answer must be correct.
@@ -151,6 +152,7 @@ import java.util.Scanner;
 		
 		if (!AccountFileManager.accountExists(username)) {
 			System.err.print("Error: No such user exist with name " + username + ".");
+			scanner.close();
 			return;
 		}
 
@@ -158,8 +160,14 @@ import java.util.Scanner;
 		
 		/*if (account == null) {
 		    System.out.println("No account found with that username.");
+
+		    scanner.close();
+		    return;
+		}
+
 		    return;*/
 		
+
 
 		System.out.println(account.getSecretQuestion());
 		System.out.print("Enter your answer: ");
@@ -171,15 +179,18 @@ import java.util.Scanner;
 		    changePassword(newPassword, account);
 		    System.out.println("Password updated successfully.");
 		} else {
-		    System.out.println("Incorrect answer. Password reset denied.");
+			System.out.println("Incorrect answer. Password reset denied.");
 		}
+		scanner.close();
 	}
+
 	
 	/**
 	 * prompts the user to to answer their secret question. Prompts the user to change
 	 * their username if they answered correctly
 	 * @author Dwann
 	 */
+	
 	public static void forgotUsername() {
 		// requirements: The user must correctly answer their secret question.
 		// postcondition: The user is prompted to change their username.
@@ -217,7 +228,7 @@ import java.util.Scanner;
 		}
 		
 		//IMPORTANT THIS PART IS TEMPORARYY: Replace the follwoing with Validation.isValidPassword() whenever its available
-		if(newPassword == null || newPassword.length()<8) {
+		if(!Validation.isValidPassword(newPassword)) {
 			System.err.println("Error; password needs to be at least 8 characters long.");
 			return false;
 		}
@@ -234,6 +245,7 @@ import java.util.Scanner;
 		account.setHashedPassword(hashedPassword);
 		
 		// IMPORTANT Need AccountFileManager.saveAccount() whenever its ready
+		AccountFileManager.saveAccount(account);
 		return true;
 	}
 	
