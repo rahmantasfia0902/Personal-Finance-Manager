@@ -1,8 +1,8 @@
 package reports;
-
+import accounts.Account;
+import accounts.AccountService;
 import integration.AppModule;
-
-import java.util.Scanner;
+import integration.MenuUtil;
 
 /**
  * Entry point for the Reports module.
@@ -25,8 +25,7 @@ public class ReportsModule implements AppModule {
      */
     private static final String MODULE_NAME = "reports";
 
-    private Scanner scanner;
-    private ReportMenu reportMenu;
+    private static final int CANCEL = 0;
     private ReportManager reportManager;
 
     /**
@@ -43,64 +42,128 @@ public class ReportsModule implements AppModule {
 
     @Override
     public void initialize() {
-        scanner = new Scanner(System.in);
-        reportMenu = new ReportMenu();
         reportManager = new ReportManager();
     }
 
     @Override
     public void handleSelection() {
+        Account currentUser = AccountService.SessionManager.getCurrentUser();
+        if (currentUser == null) {
+            System.out.println("You must be logged in to use the Reports module.");
+            return;
+        }
+        String username = currentUser.getUsername();
         boolean running = true;
 
         while (running) {
-            printMenu();
-            String choice = scanner.nextLine().trim();
-            switch (choice) {
-
-                case "1":
-                    System.out.println("Annual Report selected.");
-                    // Designate annual report generation to ReportManager
-                    break;
-
-                case "2":
-                    System.out.println("Monthly Summary selected.");
-                    //Designate Monthly Summary generation to ReportManager
-                    break;
-
-                case "3":
-                    System.out.println("Category Totals selected.");
-                    // Designate Category Totals generation to ReportManager
-                    break;
-
-                case "4":
-                    System.out.println("Budget Summary selected.");
-                    // Designate Budget Summary generation to ReportManager
-                    break;
-
-                case "0":
-                    running = false;
-                    break;
-
-                default:
-                    System.out.println("Invalid option.");
+            String choice = MenuUtil.promptChoice(
+                    "Reports Module",
+                    "1. Annual Report",
+                    "2. Monthly Summary",
+                    "3. Category Totals",
+                    "4. Budget Summary",
+                    "0. Return to Main Menu"
+            );
+switch (choice) {
+                case "1" -> handleAnnualReport(username);
+                case "2" -> handleMonthlySummary(username);
+                case "3" -> handleCategoryTotals(username);
+                case "4" -> handleBudgetSummary(username);
+                case "0" -> running = false;
+                default -> System.out.println("Invalid option, please try again.");
             }
         }
     }
+//Submenu Actions
+private void handleAnnualReport(String username) {
+        int year = promptForYear();
+        if (year == CANCEL) {
+            System.out.println("Cancelled.");
+            return;
+        }
 
+        System.out.println("\nGenerating Annual Report for " + year + "...");
+        reportManager.generateReport(ReportType.ANNUAL, username, year);
+    }
+    private void handleMonthlySummary(String username) {
+        int year = promptForYear();
+        if (year == CANCEL) {
+            System.out.println("Cancelled.");
+            return;
+        }
+        int month = promptForMonth();
+        if (month == CANCEL) {
+            System.out.println("Cancelled.");
+            return;
+        }
+
+        System.out.println("\nGenerating Monthly Summary for " + month + "/" + year + "...");
+        reportManager.generateReport(ReportType.MONTHLY, username, year, month);
+    }
+    private void handleCategoryTotals(String username) {
+        int year = promptForYear();
+        if (year == CANCEL) {
+            System.out.println("Cancelled.");
+            return;
+        }
+
+        System.out.println("\nGenerating Category Totals Report for " + year + "...");
+        reportManager.generateReport(ReportType.CATEGORY_TOTALS, username, year);
+    }
+    private void handleBudgetSummary(String username) {
+        int year = promptForYear();
+        if (year == CANCEL) {
+            System.out.println("Cancelled.");
+            return;
+        }
+
+        System.out.println("\nGenerating Budget Summary Report for " + year + "...");
+        reportManager.generateReport(ReportType.BUDGET_SUMMARY, username, year);
+    }
+   
     /**
-     * Prints the Reports submenu.
+     * Prompts the user to enter a year, or 0 to cancel.
+     *
+     * @return the valid year, or CANCEL (0) if backed out or invalid
      */
-    private void printMenu() {
-
-        System.out.println();
-        System.out.println("=== Reports Module ===");
-        System.out.println("1. Annual Report");
-        System.out.println("2. Monthly Summary");
-        System.out.println("3. Category Totals");
-        System.out.println("4. Budget Summary");
-        System.out.println("0. Return to Main Menu");
-        System.out.print("Choose an option: ");
-
+private int promptForYear() {
+        String input = MenuUtil.promptString("Enter year (or 0 to cancel)");
+        try {
+            int year = Integer.parseInt(input);
+            if (year == CANCEL) {
+                return CANCEL;
+            }
+            if (year < 1900 || year > 2100) { // Standard bounds check
+                System.out.println("Please enter a realistic year (e.g., 2026).");
+                return CANCEL;
+            }
+            return year;
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid year entered.");
+            return CANCEL;
+        }
+    }
+    /**
+     * Prompts the user to enter a month (1-12), or 0 to cancel.
+     *
+     * @return the valid month, or CANCEL (0) if backed out or invalid
+     */
+    private int promptForMonth() {
+        String input = MenuUtil.promptString("Enter month (1-12, or 0 to cancel)");
+        try {
+            int month = Integer.parseInt(input);
+            if (month == CANCEL) {
+                return CANCEL;
+            }
+            if (month < 1 || month > 12) {
+                System.out.println("Month must be between 1 and 12.");
+                return CANCEL;
+            }
+            return month;
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid month entered.");
+            return CANCEL;
+        }
     }
 
 }

@@ -51,7 +51,7 @@ public class FileUtil {
      * necessary.
      *
      * @throws IllegalStateException if the data directory could not be created
-     * @author Mohammed, Ayub, Fuad
+     * @author Mohammed
      */
     public void ensureDataDirectoryExists() {
         try {

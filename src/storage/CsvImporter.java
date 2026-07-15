@@ -24,7 +24,7 @@ public class CsvImporter {
     /**
      * Constructs a new {@code CsvImporter} instance.
      *
-     * @author Mohammed, Ayub, Fuad
+     * @author Ayub
      */
     public CsvImporter() {
     }
