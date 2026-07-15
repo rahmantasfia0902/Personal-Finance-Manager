@@ -16,7 +16,7 @@ import java.util.List;
  * Provides CRUD (Create, Read, Update, Delete) operations for persisting
  * {@link Budget} objects to and from data files.
  *
- * @author Mohammed, Ayub, Fuad
+ * @author Fuad
  */
 public class BudgetStorage {
 

@@ -14,7 +14,7 @@ public record Transaction(LocalDate date, String category, double amount) {
      * Returns the date on which the transaction occurred.
      *
      * @return the transaction date
-     * @author Mohammed, Ayub, Fuad
+     * @author Mohammed
      */
     public LocalDate date() {
         return date;

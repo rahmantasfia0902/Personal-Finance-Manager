@@ -7,7 +7,7 @@ import java.util.List;
  * Represents a user's budget for a given year, containing a collection of
  * {@link Transaction} records and operations to query and modify them.
  *
- * @author Mohammed, Ayub, Fuad
+ * @author Fuad
  */
 public class Budget {
     /**

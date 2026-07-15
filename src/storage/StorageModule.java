@@ -3,7 +3,6 @@ package storage;
 import accounts.Account;
 import accounts.AccountService;
 import integration.AppModule;
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -18,7 +17,7 @@ import java.util.Scanner;
  * this module only reads the already-logged-in user from
  * {@link AccountService.SessionManager}.</p>
  *
- * @author Mohammed, Ayub, Fuad
+ * @author Mohammed
  */
 public class StorageModule implements AppModule {
 
