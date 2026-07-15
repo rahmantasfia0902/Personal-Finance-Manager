@@ -1,7 +1,6 @@
 package storage;
 
 import accounts.Account;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,7 +13,7 @@ import java.util.List;
  * Manages persistence of user account data to and from the file system,
  * including basic password obfuscation.
  *
- * @author Mohammed, Ayub, Fuad
+ * @author Fuad
  */
 public final class AccountFileManager {
 
