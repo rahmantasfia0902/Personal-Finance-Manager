@@ -1,5 +1,5 @@
 package reports;
-import account.Account;
+import accounts.Account;
 import accounts.AccountService;
 import integration.AppModule;
 import integration.MenuUtil;
