@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Generates financial recommendations based on yearly budget analysis.
  *
- * @author Waliur Sun
+ * @author Waliur Sun, Adrian Singh, Felix Santos
  */
 public class RecommendationEngine {
 

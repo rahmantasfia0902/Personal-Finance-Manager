@@ -13,7 +13,7 @@ import java.util.List;
  * Positive = Income
  * Negative = Expense
  *
- * @author Waliur Sun
+ * @author Waliur Sun, Adrian Singh
  */
 public class BudgetStatistics {
 

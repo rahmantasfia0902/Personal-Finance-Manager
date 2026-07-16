@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Creates, prints, and exports the financial insight report.
  *
- * @author Waliur Sun
+ * @author Waliur Sun, Adrian Singh, Felix Santos
  */
 public class InsightReport {
 

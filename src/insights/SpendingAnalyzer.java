@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Performs spending analysis for yearly transactions.
  *
- * @author Waliur Sun
+ * @author Waliur Sun, Adrian Singh
  */
 public class SpendingAnalyzer {
 
