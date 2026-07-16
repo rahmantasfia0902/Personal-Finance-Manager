@@ -9,7 +9,7 @@ import java.util.Map;
  * This record is immutable and contains all calculated values
  * for a yearly budget analysis.
  *
- * @author Waliur Sun
+ * @author Adrian Singh, Waliur Sun, Felix Santos
  */
 public record InsightResult(
 

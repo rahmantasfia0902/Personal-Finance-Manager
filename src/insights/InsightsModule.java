@@ -37,7 +37,7 @@ public class InsightsModule implements AppModule {
      * <p>No heavy setup is done in the constructor. Setup belongs in
      * {@link #initialize()}.</p>
      *
-     * @author Waliur Sun
+     * @author Felix Santos, Waliur Sun
      */
     public InsightsModule() {
     }
@@ -46,7 +46,7 @@ public class InsightsModule implements AppModule {
      * Returns the unique module name used by Integration.
      *
      * @return the module name
-     * @author Waliur Sun
+     * @author Adrian Singh
      */
     @Override
     public String getModuleName() {
@@ -58,7 +58,7 @@ public class InsightsModule implements AppModule {
      *
      * <p>This method creates the helper objects needed by the module.</p>
      *
-     * @author Waliur Sun
+     * @author Adrian Singh
      */
     @Override
     public void initialize() {
@@ -109,7 +109,7 @@ public class InsightsModule implements AppModule {
      * provides real yearly transactions, this method can pass those real
      * transactions into {@link InsightsManager} instead.</p>
      *
-     * @author Waliur Sun
+     * @author Felix Santos
      */
     private void handleGenerateInsights() {
         List<String[]> transactions = createAlphaDemoTransactions();
@@ -137,7 +137,7 @@ public class InsightsModule implements AppModule {
      * <p>Users may enter one category or several categories separated
      * by commas.</p>
      *
-     * @author Waliur Sun
+     * @author Felix Santos
      */
     private void handleAddExcludedCategories() {
         System.out.println();
@@ -169,7 +169,7 @@ public class InsightsModule implements AppModule {
     /**
      * Displays all currently excluded categories.
      *
-     * @author Waliur Sun
+     * @author Waliur Sun, Adrian Singh
      */
     private void handleViewExcludedCategories() {
         System.out.println();

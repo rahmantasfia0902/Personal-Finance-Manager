@@ -12,7 +12,7 @@ import java.util.Map;
  * Insights module and serves as the entry point used by the
  * Integration Team.</p>
  *
- * @author Waliur Sun
+ * @author Adrian Singh, Felix Santos, Waliur Sun
  */
 public class InsightsManager {
 
@@ -136,7 +136,7 @@ public class InsightsManager {
      *
      * @param transactions yearly transaction list
      * @return report text
-     * @author Waliur Sun
+     * @author Felix Santos, Waliur Sun
      */
     public String analyzeYear(List<String[]> transactions) {
         return analyzeYear(transactions, new ArrayList<>());
@@ -148,7 +148,7 @@ public class InsightsManager {
      * @param transactions yearly transaction list
      * @param excludedCategories categories that should be ignored
      * @return report text
-     * @author Waliur Sun
+     * @author Felix Santos, Waliur Sun, Adrian Singh
      */
     public String analyzeYear(
             List<String[]> transactions,
@@ -193,7 +193,7 @@ public class InsightsManager {
      * @param transactions yearly transaction list
      * @param filePath destination file
      * @throws IOException if export fails
-     * @author Waliur Sun
+     * @author Felix Santos, Waliur Sun
      */
     public void exportInsights(
             List<String[]> transactions,
@@ -210,7 +210,7 @@ public class InsightsManager {
      * @param filePath destination file
      * @param excludedCategories categories that should be ignored
      * @throws IOException if export fails
-     * @author Waliur Sun
+     * @author Felix Santos, Waliur Sun, Adrian Singh
      */
     public void exportInsights(
             List<String[]> transactions,
@@ -230,7 +230,7 @@ public class InsightsManager {
      * @param transactions original transaction list
      * @param excludedCategories categories that should be ignored
      * @return filtered transaction list
-     * @author Waliur Sun
+     * @author Adrian Singh, Waliur Sun
      */
     private List<String[]> filterExcludedCategories(
             List<String[]> transactions,
@@ -290,7 +290,7 @@ public class InsightsManager {
      * Ensures the transaction list is valid.
      *
      * @param transactions transaction list
-     * @author Waliur Sun
+     * @author Waliur Sun, Felix Santos
      */
     private void validateTransactions(List<String[]> transactions) {
 
@@ -312,7 +312,7 @@ public class InsightsManager {
      *
      * @param transactions transaction list
      * @return budget year
-     * @author Waliur Sun
+     * @author Felix Santos, Waliur Sun, Adrian Singh
      */
     private int extractYear(List<String[]> transactions) {
 
@@ -349,7 +349,7 @@ public class InsightsManager {
      * Returns the BudgetStatistics object.
      *
      * @return BudgetStatistics
-     * @author Waliur Sun
+     * @author Felix Santos, Waliur Sun
      */
     public BudgetStatistics getBudgetStatistics() {
         return budgetStatistics;
