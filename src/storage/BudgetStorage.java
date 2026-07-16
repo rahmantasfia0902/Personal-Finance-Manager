@@ -83,8 +83,8 @@ public class BudgetStorage {
             String header = reader.readLine();
 
             if (!CSV_HEADER.equals(header)) {
-                System.err.println("Invalid budget file header for year " + year + ".");
-                return null;
+                throw new IllegalStateException(
+                        "Invalid budget file header for year " + year + ".");
             }
 
             String line;
@@ -99,8 +99,7 @@ public class BudgetStorage {
 
             return budget;
         } catch (IOException e) {
-            System.err.println("Error reading budget: " + e.getMessage());
-            return null;
+            throw new IllegalStateException("Unable to read budget: " + year, e);
         }
     }
 
@@ -128,7 +127,7 @@ public class BudgetStorage {
         try {
             Files.deleteIfExists(budgetPath);
         } catch (IOException e) {
-            System.err.println("Error deleting budget: " + e.getMessage());
+            throw new IllegalStateException("Unable to delete budget: " + year, e);
         }
     }
 
@@ -169,12 +168,13 @@ public class BudgetStorage {
                     try {
                         years.add(Integer.parseInt(yearText));
                     } catch (NumberFormatException e) {
-                        System.err.println("Skipping invalid budget file: " + fileName);
+                        // Skip files that aren't named YYYY.csv.
                     }
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error listing budget years: " + e.getMessage());
+            throw new IllegalStateException(
+                    "Unable to list budget years for user: " + username, e);
         }
 
         Collections.sort(years);
@@ -189,9 +189,11 @@ public class BudgetStorage {
      * @author Fuad
      */
     private void writeBudget(String username, Budget budget) {
-        if (username == null || username.isBlank() || budget == null) {
-            System.err.println("Cannot save budget. Username or budget is missing.");
-            return;
+        if (username == null || username.isBlank()) {
+            throw new IllegalArgumentException("Username cannot be blank.");
+        }
+        if (budget == null) {
+            throw new IllegalArgumentException("Budget cannot be null.");
         }
 
         Path userDirectory = getUserDirectory(username);
@@ -210,7 +212,7 @@ public class BudgetStorage {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error writing budget: " + e.getMessage());
+            throw new IllegalStateException("Unable to write budget: " + budget.getYear(), e);
         }
     }
 
@@ -250,7 +252,7 @@ public class BudgetStorage {
 
             return new Transaction(date, category, amount);
         } catch (RuntimeException e) {
-            System.err.println("Skipping invalid transaction row: " + line);
+            // Skip malformed rows, mirroring AccountFileManager.parseAccount.
             return null;
         }
     }
@@ -287,8 +289,9 @@ public class BudgetStorage {
         try {
             FILE_UTIL.ensureDataDirectoryExists();
             Files.createDirectories(BASE_DIRECTORY);
-        } catch (IOException | IllegalStateException e) {
-            System.err.println("Error creating budget directory: " + e.getMessage());
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                    "Unable to create budget directory: " + BASE_DIRECTORY, e);
         }
     }
 
