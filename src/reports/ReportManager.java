@@ -12,89 +12,85 @@ package reports;
  * </p>
  *
  * @author Alyssa Johnson
- * @version 1.0
+ * @author Tahsin Abid
+ * @version 1.1
  * @since 1.0
  */
 public class ReportManager {
+    private final ConsoleReport consoleReport;
+    private final CsvReportExporter csvExporter;
+    private final ReportFormatter formatter;
 
     /**
      * Constructs a new ReportManager object.
      */
     public ReportManager() {
-
-        // TODO: Initialize ReportManager resources if needed.
-
-    }
-
-    /**
-     * Generates an annual financial report for the selected year.
-     *
-     * <p>
-     * The report should summarize yearly income, expenses,
-     * category totals, and overall budget performance.
-     * </p>
-     */
-    public void generateAnnualReport() {
-
-        // TODO: Generate annual financial report.
+        consoleReport = new ConsoleReport();
+        csvExporter = new CsvReportExporter();
+        formatter = new ReportFormatter();
 
     }
 
     /**
-     * Generates a summary of income and expenses for a selected month.
+     * Generates the selected report.
      *
-     * <p>
-     * The summary should include monthly income, monthly expenses,
-     * and the net balance for the selected month.
-     * </p>
+     * @param type report type
      */
-    public void generateMonthlySummary() {
+    public void generateReport(ReportType type) {
+        switch (type) {
+            case ANNUAL:
+                consoleReport.printAnnualReport();
+                break;
 
-        // TODO: Generate monthly summary.
+            case MONTHLY:
+                consoleReport.printMonthlySummary();
+                break;
+
+            case CATEGORY_TOTALS:
+                consoleReport.printCategoryTotals();
+                break;
+
+            case BUDGET_SUMMARY:
+                consoleReport.printBudgetSummary();
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown report type.");
+        }
 
     }
 
     /**
-     * Calculates yearly totals for each income and expense category.
+     * Generates a report that requires a username and year.
      *
-     * <p>
-     * Category totals will be used by both reports and insights
-     * to summarize financial activity.
-     * </p>
+     * @param type     the type of report
+     * @param username the current user
+     * @param year     the selected year
      */
-    public void generateCategoryTotals() {
-
-        // TODO: Calculate category totals.
-
+    public void generateReport(ReportType type, String username, int year) {
+        // TODO: Use username and year once Storage integration is complete.
+        generateReport(type);
     }
 
     /**
-     * Generates an overall budget performance summary.
+     * Generates a monthly report.
      *
-     * <p>
-     * This summary should display whether the selected year
-     * ended in a surplus or deficit and provide an overall
-     * financial overview.
-     * </p>
+     * @param type     the report type
+     * @param username the current user
+     * @param year     selected year
+     * @param month    selected month
      */
-    public void generateBudgetSummary() {
-
-        // TODO: Generate budget summary.
-
+    public void generateReport(ReportType type, String username, int year, int month) {
+        // TODO: Use username, year, and month once Storage integration is complete.
+        generateReport(type);
     }
 
     /**
-     * Directs the creation of the requested report.
+     * Returns the formatter used by this manager.
      *
-     * <p>
-     * This method determines which report should be generated
-     * based on the user's selection.
-     * </p>
+     * @return ReportFormatter
      */
-    public void generateReport() {
-
-        // TODO: Determine which report to generate.
-
+    public ReportFormatter getFormatter() {
+        return formatter;
     }
 
 }
