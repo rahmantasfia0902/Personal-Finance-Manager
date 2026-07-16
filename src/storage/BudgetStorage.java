@@ -212,7 +212,7 @@ public class BudgetStorage {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error writing budget: " + e.getMessage());
+            throw new IllegalStateException("Unable to write budget: " + budget.getYear(), e);
         }
     }
 
@@ -252,7 +252,7 @@ public class BudgetStorage {
 
             return new Transaction(date, category, amount);
         } catch (RuntimeException e) {
-            System.err.println("Skipping invalid transaction row: " + line);
+            // Skip malformed rows, mirroring AccountFileManager.parseAccount.
             return null;
         }
     }

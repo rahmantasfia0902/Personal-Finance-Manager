@@ -129,7 +129,13 @@ public class StorageModule implements AppModule {
      * @author Mohammed
      */
     private void handleListBudgetYears(String username) {
-        List<Integer> years = budgetStorage.listYearsForUser(username);
+        List<Integer> years;
+        try {
+            years = budgetStorage.listYearsForUser(username);
+        } catch (RuntimeException e) {
+            System.out.println("Could not list budgets: " + e.getMessage());
+            return;
+        }
         if (years == null || years.isEmpty()) {
             System.out.println("No budgets found for " + username + ".");
             return;
@@ -162,7 +168,13 @@ public class StorageModule implements AppModule {
             return;
         }
 
-        Budget budget = budgetStorage.readBudget(username, year);
+        Budget budget;
+        try {
+            budget = budgetStorage.readBudget(username, year);
+        } catch (RuntimeException e) {
+            System.out.println("Could not read budget for " + year + ": " + e.getMessage());
+            return;
+        }
         List<Transaction> transactions = budget.getTransactions();
         System.out.println("Budget for " + year + " (" + transactions.size() + " transactions):");
 
