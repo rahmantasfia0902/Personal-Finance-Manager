@@ -83,8 +83,8 @@ public class BudgetStorage {
             String header = reader.readLine();
 
             if (!CSV_HEADER.equals(header)) {
-                System.err.println("Invalid budget file header for year " + year + ".");
-                return null;
+                throw new IllegalStateException(
+                        "Invalid budget file header for year " + year + ".");
             }
 
             String line;
@@ -99,8 +99,7 @@ public class BudgetStorage {
 
             return budget;
         } catch (IOException e) {
-            System.err.println("Error reading budget: " + e.getMessage());
-            return null;
+            throw new IllegalStateException("Unable to read budget: " + year, e);
         }
     }
 
@@ -287,8 +286,9 @@ public class BudgetStorage {
         try {
             FILE_UTIL.ensureDataDirectoryExists();
             Files.createDirectories(BASE_DIRECTORY);
-        } catch (IOException | IllegalStateException e) {
-            System.err.println("Error creating budget directory: " + e.getMessage());
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                    "Unable to create budget directory: " + BASE_DIRECTORY, e);
         }
     }
 
