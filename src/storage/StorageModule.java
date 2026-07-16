@@ -264,18 +264,23 @@ public class StorageModule implements AppModule {
         String baseName = Path.of(filePath).getFileName().toString();
         int year = Integer.parseInt(baseName.substring(0, 4));
 
-        Budget budget = budgetStorage.yearExists(username, year)
-                ? budgetStorage.readBudget(username, year)
-                : new Budget(year);
+        try {
+            Budget budget = budgetStorage.yearExists(username, year)
+                    ? budgetStorage.readBudget(username, year)
+                    : new Budget(year);
 
-        for (Transaction t : valid) {
-            budget.addTransaction(t);
-        }
+            for (Transaction t : valid) {
+                budget.addTransaction(t);
+            }
 
-        if (budgetStorage.yearExists(username, year)) {
-            budgetStorage.updateBudget(username, budget);
-        } else {
-            budgetStorage.createBudget(username, budget);
+            if (budgetStorage.yearExists(username, year)) {
+                budgetStorage.updateBudget(username, budget);
+            } else {
+                budgetStorage.createBudget(username, budget);
+            }
+        } catch (RuntimeException e) {
+            System.out.println("Could not import transactions into " + year + ": " + e.getMessage());
+            return;
         }
 
         System.out.println("Imported " + valid.size() + " transactions into " + year + ".");
@@ -309,7 +314,13 @@ public class StorageModule implements AppModule {
             return;
         }
 
-        Budget budget = budgetStorage.readBudget(username, year);
+        Budget budget;
+        try {
+            budget = budgetStorage.readBudget(username, year);
+        } catch (RuntimeException e) {
+            System.out.println("Could not read budget for " + year + ": " + e.getMessage());
+            return;
+        }
 
         List<Transaction> toExport = chooseExportSubset(budget);
         if (toExport == null) {
@@ -379,7 +390,12 @@ public class StorageModule implements AppModule {
         boolean confirmed = MenuUtil.promptYesNo(
                 "Delete budget for " + year + "? This cannot be undone");
         if (confirmed) {
-            budgetStorage.deleteBudget(username, year);
+            try {
+                budgetStorage.deleteBudget(username, year);
+            } catch (RuntimeException e) {
+                System.out.println("Could not delete budget for " + year + ": " + e.getMessage());
+                return;
+            }
             System.out.println("Deleted budget for " + year + ".");
         } else {
             System.out.println("Cancelled.");
