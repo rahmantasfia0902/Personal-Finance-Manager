@@ -117,7 +117,7 @@ public final class AccountFileManager {
      * @return the loaded {@link Account}, or {@code null} if not found
      * @author Fuad
      */
-    public static Object loadAccount(String username) {
+    public static Account loadAccount(String username) {
         validateUsername(username);
 
         if (!Files.exists(ACCOUNT_FILE)) {
