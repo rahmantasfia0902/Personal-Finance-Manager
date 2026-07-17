@@ -1,5 +1,8 @@
 package validation;
 
+import java.util.ArrayList;
+import java.io.File;
+import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -261,23 +264,34 @@ public class Validation
 	private static boolean isValidDateFormat(String date, int recordIndex)
     {
         String[] dateArr = date.split("/");
+        final int dateLength = dateArr.length;
         int month = 0, day = 0, year = 0;
         try
         {
-            month = Integer.parseInt(dateArr[0]);
-            day = Integer.parseInt(dateArr[1]);
-            year = Integer.parseInt(dateArr[2]);
+            if(dateLength < 3)
+                throw new DateTimeException("Invalid date format at the + " + recordIndex + " data entry in the file: " + 
+                "Must be in this date format: MM/DD/YYYY");
+
+            month = Integer.parseInt(dateArr[0].trim());
+            day = Integer.parseInt(dateArr[1].trim());
+            year = Integer.parseInt(dateArr[2].trim());
             LocalDate tempDate = LocalDate.of(year, month, day);
 
-            return (tempDate.getYear() > 0);
+            if(!(tempDate.getYear() >= Validation.MIN_YEAR) || !(tempDate.getYear() <= Validation.MAX_YEAR))
+                throw new DateTimeException("Invalid date format at the + " + recordIndex + " data entry in the file: " +
+                "The year must be within the range " + Validation.MIN_YEAR + " - " + Validation.MAX_YEAR);
+
+            return true;
         }
         catch(DateTimeException dateException)
         {
+            System.out.println(dateException.getMessage());
             return false;
         }
         catch(NumberFormatException e)
         {
-            System.out.println("Invalid date format at the " + recordIndex + " data entry in the file" );
+            System.out.println("Invalid date format at the " + recordIndex + " data entry in the file:" +
+                "Must be in this date format: MM/DD/YYYY. The month, day, and year must be whole numbers" );
             return false;
         }
 	}
@@ -309,19 +323,17 @@ public class Validation
 	 * */
 	private static boolean isValidCategory(String categ, int recordIndex)
     {
-    //TODO:Try to make categories its own type so that categories that are either expenses or income can be easily distinguished and
-    //add to 
-        /*String[] validCategories = {
-        "Compensation", "Allowance", "Investments",
-        "Home", "Utilities", "Food",
-        "Appearance", "Work", "Education",
-        "Transportation", "Entertainment",
-        "Professional Services", "Other"
-        };
-        */
+        if(validCategories == null)
+        {
+
+            System.out.println("Error in Validation.isValidCategory(): Unset income and expense valid categories to check for");
+            return false;
+        }
 
         final int len = validCategories.length;
         boolean check = false;
+        categ = categ.trim();
+
         for(int i = 0; (i < len) && !check; i++)
         {
             check = categ.equalsIgnoreCase(validCategories[i]);
@@ -348,7 +360,7 @@ public class Validation
         {
             double tempAmount = Double.parseDouble(amount);
             int dollarAmount = (int)tempAmount;
-            double cents = tempAmount - dollarAmount;
+            double cents = Math.abs(tempAmount - dollarAmount);
 
             if(cents > 0.001)
                 System.out.println("Truncating amount in " + recordIndex + " data entry to the nearest dollar");
@@ -369,6 +381,10 @@ public class Validation
 	
     public static void setValidCategories(String[] categories)
     {
+        for(int i = 0; i < categories.length; i++)
+        {
+            categories[i] = categories[i].trim();
+        }
         Validation.validCategories = categories;
     }
 
@@ -382,13 +398,16 @@ public class Validation
 	public static boolean isValidRecord(String movieRecordStr, int recordIndex)
     {
         String[] recordArr = movieRecordStr.split(",");
+        if(recordArr.length < 3)
+            return false;
+
         String date = recordArr[0];
         String category = recordArr[1];
         String amount = recordArr[2];
 
-        return Validation.isValidDateFormat(date, recordIndex) 
-        && Validation.isValidAmount(amount, recordIndex) 
-        && Validation.isValidCategory(category, recordIndex);
-	}
 
+        return Validation.isValidDateFormat(date, recordIndex) 
+        && Validation.isValidCategory(category, recordIndex)
+        && Validation.isValidAmount(amount, recordIndex); 
+	}
 }
