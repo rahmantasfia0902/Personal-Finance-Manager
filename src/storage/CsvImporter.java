@@ -102,14 +102,14 @@ public class CsvImporter {
      * @author Ayub
      */
     public Transaction parseLine(String line) {
-        String[] fields = line.split(",");
-        if (fields.length != 3) {
+        List<String> fields = splitCsvLine(line);
+        if (fields.size() != 3) {
             return null;
         }
 
-        String rawDate = fields[0].trim();
-        String category = fields[1].trim();
-        String rawAmount = fields[2].trim();
+        String rawDate = fields.get(0).trim();
+        String category = fields.get(1).trim();
+        String rawAmount = fields.get(2).trim();
 
         LocalDate date;
         try {
@@ -130,6 +130,46 @@ public class CsvImporter {
         }
 
         return new Transaction(date, category, amount);
+    }
+
+    /**
+     * Splits one line of CSV text into fields, honouring quoted fields so
+     * that commas inside quotation marks (e.g. {@code "Food, Dining"}) are
+     * kept as part of a single field rather than treated as separators. A
+     * doubled quote ({@code ""}) inside a quoted field is read as one
+     * literal quote character.
+     *
+     * @param line the raw CSV line to split
+     * @return the parsed fields, with surrounding quotes removed
+     * @author Fuad
+     */
+    private List<String> splitCsvLine(String line) {
+        List<String> fields = new ArrayList<>();
+        StringBuilder currentField = new StringBuilder();
+        boolean insideQuotes = false;
+
+        for (int i = 0; i < line.length(); i++) {
+            char currentCharacter = line.charAt(i);
+
+            if (currentCharacter == '"') {
+                if (insideQuotes
+                        && i + 1 < line.length()
+                        && line.charAt(i + 1) == '"') {
+                    currentField.append('"');
+                    i++;
+                } else {
+                    insideQuotes = !insideQuotes;
+                }
+            } else if (currentCharacter == ',' && !insideQuotes) {
+                fields.add(currentField.toString());
+                currentField.setLength(0);
+            } else {
+                currentField.append(currentCharacter);
+            }
+        }
+
+        fields.add(currentField.toString());
+        return fields;
     }
 
     /**
